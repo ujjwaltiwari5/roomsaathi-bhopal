@@ -31,3 +31,23 @@ Stay tuned for updates!
 - connect-flash – Flash messages
 - dotenv – Environment variables
 - method-override – PUT & DELETE requests support
+
+## 📸 Screenshots
+
+### Home Page
+![Home](images/home.png)
+
+### Listings Page
+![Listings](images/listing.png)
+
+### Login Page
+![Login](images/login.png)
+
+
+
+
+
+
+
+
+
