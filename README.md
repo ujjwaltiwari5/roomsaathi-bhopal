@@ -32,15 +32,14 @@ Stay tuned for updates!
 
 ## 📸 Screenshots
 
-### Home Page
-![Home](images/home.png)
-
 ### Listings Page
 ![Listings](images/listing.png)
 
 ### Login Page
 ![Login](images/login.png)
 
+### Review Page
+![Review](images/review.png)
 
 
 
