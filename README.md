@@ -39,7 +39,7 @@ Stay tuned for updates!
 ![Login](images/login.png)
 
 ### Review Page
-![Review](images/review.png)
+![Reviews](images/review.png)
 
 
 
