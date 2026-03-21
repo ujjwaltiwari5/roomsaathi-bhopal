@@ -18,3 +18,16 @@ This project is in progress (50% completed).
 - MongoDB
 - EJS
 Stay tuned for updates!
+
+## 📦 NPM Packages Used
+- express – Web framework
+- mongoose – MongoDB ODM
+- ejs – Templating engine
+- multer – File upload handling
+- cloudinary – Cloud image storage
+- multer-storage-cloudinary – Cloudinary storage engine
+- passport – Authentication
+- express-session – Session management
+- connect-flash – Flash messages
+- dotenv – Environment variables
+- method-override – PUT & DELETE requests support
