@@ -33,7 +33,7 @@ Stay tuned for updates!
 ## 📸 Screenshots
 
 ### Listings Page
-![Listings](images/listing.png)
+![Listings](images/listings.png)
 
 ### Login Page
 ![Login](images/login.png)
