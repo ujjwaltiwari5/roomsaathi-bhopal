@@ -6,8 +6,6 @@ This project is in progress (50% completed).
 - Basic CRUD operations
 - Listing creation
 - Backend setup with Node.js & Express
-
-## 🔜 Upcoming Features
 - User authentication
 - Reviews & ratings
 - UI improvements
