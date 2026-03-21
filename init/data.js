@@ -109,7 +109,7 @@ const sampleListings =[
     filename: "darjeeling"
   }
 },
-// ?? (same pattern continue — total 20 bana raha hu)
+// ?? (same pattern continue â€” total 20 bana raha hu)
 {
   title: "Agra Heritage Stay",
   description: "Near Taj Mahal",
@@ -221,7 +221,4 @@ const sampleListings =[
   }
 }
 ];
-
-module.exports = { sampleListings };
-
 module.exports = { data: sampleListings };
