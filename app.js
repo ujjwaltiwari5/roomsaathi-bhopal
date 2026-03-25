@@ -2,8 +2,6 @@ if (process.env.NODE_ENV != "production")
 {
 require("dotenv").config();
 }
-
-
 const express = require("express");
 const app = express();
 
@@ -21,19 +19,19 @@ const User = require("./models/user.js");
 const listingRouter = require("./routes/listing.js");
 const reviewRouter = require("./routes/review.js");
 const userRouter = require("./routes/user.js");
-main()
+const MONGO_URL = "mongodb://127.0.0.1:27017/WanderLust";
+
+//const dbUrl = process.env.ATLASDB_URL;
+  main()
 .then(()=>{
 	console.log("Connected to DB");
 })
 .catch((err)=>{
 	console.log(err);
 })
-
-
 async function main() {
-	let MONGO_URL = "mongodb://127.0.0.1:27017/WanderLust";
 	await mongoose.connect(MONGO_URL);
-}
+};
 
 app.set("view engine","ejs");
 app.set("views",path.join(__dirname,"views"));
@@ -64,9 +62,9 @@ passport.serializeUser(User.serializeUser());
 passport.deserializeUser(User.deserializeUser());
 
 
-app.get("/",(req,res)=>{
-	res.send("hey i m root");
-})
+//app.get("/",(req,res)=>{
+//	res.send("hey i m root");
+//})
 
 app.use((req,res,next) => {
 	res.locals.success = req.flash("success");

@@ -100,7 +100,6 @@
 	 </form>
 	 <%} %>
 	 </div>
-	 <p> <b> All reviews </B></p>
 	   <div class = "row">
 	  <% for (review of listing.reviews) {%>
 	    <div class = "card col-5 ms-3 mb-3">
@@ -119,7 +118,16 @@
 		  </div>
           <%}%>
 		  </div>
-		  
+			<div >
+			  <h3> Where you 'll be </h3>
+			  <div id="map"></div>
+             <script>
+               window.listingCoords = <%- JSON.stringify(listing.geometry?.coordinates || []) %>;
+               window.listingTitle = "<%= listing.title %>";
+
+              console.log("Coords from EJS:", window.listingCoords);
+            </script>
+            </div>
    </div>
   </div>
   </div>
