@@ -98,3 +98,7 @@ app.use((err,req,res,next) => {
 app.listen(9090,()=>{
 	console.log("server listening on port no: 9090");
 })
+
+app.get("/search", (req,res) =>{
+	res.send("search");
+});
