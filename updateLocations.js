@@ -1,45 +1,49 @@
-const mongoose = require("mongoose");
-const Listing = require("./models/listing");
-
-async function run() {
-  await mongoose.connect("mongodb://127.0.0.1:27017/wanderlust");
-
-  let listings = await Listing.find({});
-
-  for (let listing of listings) {
-    try {
-      // ?? sirf unko update kare jisme geometry nahi hai
-      if (!listing.geometry) {
-        let url = `https://nominatim.openstreetmap.org/search?format=json&q=${listing.location}`;
-
-        let res = await fetch(url, {
-          headers: { "User-Agent": "wanderlust-app" },
-        });
-
-        let data = await res.json();
-
-        if (data.length > 0) {
-          let lat = parseFloat(data[0].lat);
-          let lng = parseFloat(data[0].lon);
-
-          listing.geometry = {
-            type: "Point",
-            coordinates: [lng, lat],
-          };
-
-          await listing.save();
-
-          console.log("? FIXED:", listing.title);
-        } else {
-          console.log("? NOT FOUND:", listing.location);
-        }
-      }
-    } catch (err) {
-      console.log("ERROR:", err.message);
-    }
-  }
-
-  mongoose.connection.close();
+const User = require("../models/user.js");
+module.exports.renderSignupForm = (req,res) =>{
+	res.render("./users/signup.ejs");
 }
 
-run();
+module.exports.signUp = async(req,res) =>{
+	try
+	{
+		let{username , email , password} =req.body;
+	    const newUser = new User({email , username});
+	    const registeredUser = await User.register(newUser,password);
+		console.log(registeredUser);
+		req.login(registeredUser , (err) => {
+			if (err)
+			{
+				return next();
+			}
+		req.flash("success", "Welcome to Wanderlust!");
+		res.redirect("/listings");
+	})
+	}
+	catch (e)
+	{
+		req.flash("error", e.message);
+		res.redirect("/signup");
+	}
+}
+
+module.exports.renderLoginForm = (req,res) =>{
+	res.render("./users/login.ejs");
+};
+
+module.exports.login = async(req,res) =>{
+          req.flash("success", "Welcome back to Wanderlust");
+		  let redirectUrl = res.locals.redirectUrl || "/listings";
+		  res.redirect(redirectUrl);
+};
+
+module.exports.logOut = (req,res,next) =>{
+	req.logout((err) => {
+		if (err)
+		{
+			next(err);
+		}
+    req.flash("success" , "you are logged out");
+	res.redirect("/listings");
+	}
+);
+};
