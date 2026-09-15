@@ -1,7 +1,7 @@
 # Wanderlust 🌍
 Wanderlust is a full-stack travel listing web application currently under development.
 ##  Status
-This project is in progress (50% completed).
+This project is completed.
 ## Features (Completed)
 - Basic CRUD operations
 - Listing creation
