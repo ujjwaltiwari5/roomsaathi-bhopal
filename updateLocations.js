@@ -1,8 +1,17 @@
+const dns = require("dns");
+dns.setServers(["8.8.8.8", "8.8.4.4"]);
+
+if (process.env.NODE_ENV != "production") {
+  require("dotenv").config();
+}
+
 const mongoose = require("mongoose");
 const Listing = require("./models/listing");
 
+const dbUrl = process.env.ATLASDB_URL;
+
 async function run() {
-  await mongoose.connect("mongodb://127.0.0.1:27017/WanderLust");
+  await mongoose.connect(dbUrl);
   console.log("Connected to DB");
 
   let listings = await Listing.find({});
@@ -39,6 +48,9 @@ async function run() {
         } else {
           console.log("NOT FOUND:", listing.location);
         }
+
+        // Nominatim ko overload na kare, isliye har request ke beech thoda gap
+        await new Promise((resolve) => setTimeout(resolve, 1000));
       } else {
         console.log("SKIPPED (already has coordinates):", listing.title);
       }

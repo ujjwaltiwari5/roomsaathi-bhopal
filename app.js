@@ -17,6 +17,7 @@ const flash = require("connect-flash");
 const passport = require("passport");
 const LocalStrategy = require("passport-local");
 const User = require("./models/user.js");
+const Listing = require("./models/listing.js");
 //const initData = require("./init/data.js");
 const listingRouter = require("./routes/listing.js");
 const reviewRouter = require("./routes/review.js");
@@ -86,6 +87,24 @@ app.get("/demoUser", async(req,res) =>{
   app.use("/listings", listingRouter);
   app.use("/listings/:id/reviews", reviewRouter);
   app.use("/", userRouter);
+  app.get("/search", async (req, res) => {
+	let { destination } = req.query;
+	let allListings;
+
+	if (destination && destination.trim() !== "") {
+		allListings = await Listing.find({
+			$or: [
+				{ title: { $regex: destination, $options: "i" } },
+				{ location: { $regex: destination, $options: "i" } },
+				{ country: { $regex: destination, $options: "i" } },
+			],
+		});
+	} else {
+		allListings = await Listing.find({});
+	}
+
+	res.render("listings/index", { allListings });
+});
 
 app.use((req,res,next) => {
 	next(new ExpressError(404, "Page not found!"));
@@ -100,6 +119,4 @@ app.listen(9090,()=>{
 	console.log("server listening on port no: 9090");
 })
 
-app.get("/search", (req,res) =>{
-	res.send("search");
-});
+
