@@ -2,14 +2,20 @@ const mongoose = require("mongoose");
 const Listing = require("./models/listing");
 
 async function run() {
-  await mongoose.connect("mongodb://127.0.0.1:27017/wanderlust");
+  await mongoose.connect("mongodb://127.0.0.1:27017/WanderLust");
+  console.log("Connected to DB");
 
   let listings = await Listing.find({});
+  console.log(`Found ${listings.length} listings`);
 
   for (let listing of listings) {
     try {
-      // ?? sirf unko update kare jisme geometry nahi hai
-      if (!listing.geometry) {
+      let hasCoords =
+        listing.geometry &&
+        Array.isArray(listing.geometry.coordinates) &&
+        listing.geometry.coordinates.length === 2;
+
+      if (!hasCoords) {
         let url = `https://nominatim.openstreetmap.org/search?format=json&q=${listing.location}`;
 
         let res = await fetch(url, {
@@ -29,17 +35,22 @@ async function run() {
 
           await listing.save();
 
-          console.log("? FIXED:", listing.title);
+          console.log("FIXED:", listing.title);
         } else {
-          console.log("? NOT FOUND:", listing.location);
+          console.log("NOT FOUND:", listing.location);
         }
+      } else {
+        console.log("SKIPPED (already has coordinates):", listing.title);
       }
     } catch (err) {
-      console.log("ERROR:", err.message);
+      console.log("ERROR:", listing.title, "-", err.message);
     }
   }
 
+  console.log("Done.");
   mongoose.connection.close();
 }
 
-run();
+run().catch((err) => {
+  console.log("FATAL ERROR:", err.message);
+});
