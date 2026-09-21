@@ -1,97 +1,22 @@
  <% layout("/layouts/boilerplate") %>
-  
-<%# <h3>All Listings</h3> %>
-  <style>
-  #filters{
-    display:flex;
-	flex-wrap:wrap;
-	align-items: center;
-	}
 
-	.filter{
-	text-align: center;
-	margin-right: 2rem;
-	margin-top: 2rem;
-	opacity: 0.7;
-	}
+<div class="hero-banner mt-3 mb-4">
+  <h1>Bhopal me apna Room ya Flat Dhundo</h1>
+  <p>Students aur professionals ke liye — verified listings, area-wise search, seedha owner se WhatsApp par baat karo.</p>
+</div>
 
-	.filter:hover{
-	  opacity: 1;
-	  cursor: pointer;
-	  }
+<% if (allListings.length === 0) { %>
+  <div class="empty-state">
+    <i class="fa-solid fa-house-circle-xmark"></i>
+    <h5>Koi listing nahi mili</h5>
+    <p class="text-muted mb-3">Filters badal ke try karo, ya sabse pehle apni listing daalo.</p>
+    <a href="/listings/new" class="btn add-btn text-white">+ List Your Room</a>
+  </div>
+<% } else { %>
 
-	.filter p{
-	  font-size: 0.8rem;
-	  }
+<p class="text-muted mb-3"><%= allListings.length %> room(s)/flat(s) available</p>
 
-	.tax-info{
-	   display:none;
-	   }
-
-    .tax-toggle{
-	   border: 1px solid black;
-	   border-radius:1rem;
-	   height: 3.25rem;
-	   padding: 1rem;
-	   margin-left: 1rem;
-	   display: flex;
-	   align-items:center;
-	   }
-	</style>
-
-<div id = "filters">
-  <div class = "filter">
-    <div><i class = "fa-solid fa-fire" ></i></div>
-	  <p>Trending</p>
-   </div>
-   <div class = "filter">
-    <div><i class = "fa-solid fa-bed" ></i></div>
-	  <p>Rooms</p>
-   </div>
-   <div class = "filter">
-    <div><i class = "fa-solid fa-mountain-city" ></i></div>
-	  <p>Iconic Cities</p>
-   </div>
-   <div class = "filter">
-    <div><i class = "fa-solid fa-mountain" ></i></div>
-	  <p>Mountains</p>
-   </div>
-   <div class = "filter">
-    <div><i class = "fa-solid fa-fort-awesome" ></i></div>
-	  <p>Castles</p>
-   </div>
-   <div class = "filter">
-    <div><i class = "fa-solid fa-person-swimming" ></i></div>
-	  <p>Amazing Pools</p>
-   </div>
-   <div class = "filter">
-    <div><i class = "fa-solid fa-campground" ></i></div>
-	  <p>Camping</p>
-   </div>
-   <div class = "filter">
-    <div><i class = "fa-solid fa-cow" ></i></div>
-	  <p>Farms</p>
-   </div>
-   <div class = "filter">
-    <div><i class = "fa-solid fa-snowflake" ></i></div>
-	  <p>Arctics</p>
-   </div>
-   <div class = "filter">
-    <div><i class = "fa-solid fa-igloo" ></i></div>
-	  <p>Domes</p>
-   </div>
-   <div class = "tax-toggle">
-    <div class="form-check-reverse form-switch">
-     <input
-	   class="form-check-input"
-	   type="checkbox"
-	   role="switch"
-	   id="switchCheckDefault">
-     <label class="form-check-label" for="switchCheckDefault">Display total after taxes</label>
-   </div>
-   </div>
-   </div>
-<div class="row row-cols-lg-3 row-cols-md-2 row-cols-sm-1 mt-3">
+<div class="row row-cols-lg-3 row-cols-md-2 row-cols-sm-1 mt-2">
 
 <% for(let listing of allListings) { %>
 
@@ -101,22 +26,25 @@
 
 <div class="card h-100 listing-card">
 
+<div class="listing-img-wrap">
 <img 
-src="<%= listing.image.url%>" 
+src="<%= listing.images && listing.images[0] ? listing.images[0].url : '' %>" 
 class="card-img-top"
 alt="listing_image"
-style="height:20rem; object-fit:cover;"
 /> 
-
+<span class="badge-pill img-badge"><%= listing.roomType %></span>
 <div class = "card-img-overlay"></div>
-
+</div>
 
 <div class="card-body">
-<p class="card-text">
-<b><%= listing.title %></b><br/>
-&#8377; <%= listing.price ? listing.price.toLocaleString("en-IN") : "" %> /night
-<i class = "tax-info" > &nbsp +18% GST </i>
+<p class="card-text mb-1">
+<b><%= listing.title %></b>
 </p>
+<p class="listing-sub mb-2"><i class="fa-solid fa-location-dot"></i> <%= listing.area %></p>
+<div class="d-flex justify-content-between align-items-center">
+<span class="listing-price">&#8377; <%= listing.price ? listing.price.toLocaleString("en-IN") : "" %> <small>/month</small></span>
+<span class="badge-pill badge-pref-<%= listing.preferredFor || 'Any' %>"><%= listing.preferredFor || "Any" %></span>
+</div>
 </div>
 </div>
 
@@ -126,21 +54,4 @@ style="height:20rem; object-fit:cover;"
 
 <% } %>
 </div>
-</div>
-<script>
-  let taxSwitch = document.getElementById("switchCheckDefault");
-  taxSwitch.addEventListener("click",()=>{
-  let taxInfo = document.getElementsByClassName("tax-info");
-  for (info of taxInfo)
-  {
-	 if (info.style.display != "inline")
-	 {
-		 info.style.display = "inline";
-	 }  
-	 else 
-	  {
-		  info.style.display = "none";
-	  }
-  }
-  });
-</script>
+<% } %>

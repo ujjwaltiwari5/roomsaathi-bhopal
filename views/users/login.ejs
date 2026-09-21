@@ -1,31 +1,31 @@
 <% layout("/layouts/boilerplate.ejs") %>
-<div class = "row mt-3">
-    <h1 class = "col-6 offset-3"> Login</h1>
-    <div class = "col-6 offset-3">
-	  <form action = "/login" method = "POST" class = "needs-validation" novalidate>
-	    <div class = "mb-3">
-           <label for = "Username" class = "form-label" >Username </label>
-              <input
+<div class="auth-wrap">
+  <div class="auth-card">
+    <div class="auth-icon"><i class="fa-solid fa-right-to-bracket"></i></div>
+    <h3 class="text-center mb-1">Welcome back</h3>
+    <p class="text-muted text-center mb-4">Login to RoomSaathi Bhopal</p>
+    <form action = "/login" method = "POST" class = "needs-validation" novalidate>
+      <div class = "mb-3">
+         <label for = "Username" class = "form-label" >Username </label>
+            <input
 			    name = "username"
 				id = "username"
                 type = "text"
 				class = "form-control"
 				required
 			/>
-      </div>
-	  </div>
-		<div class = "col-6 offset-3">
-	    <div class = "mb-3">
-           <label for = "Password" class = "form-label" >Password</label>
-              <input
+    </div>
+    <div class = "mb-3">
+         <label for = "Password" class = "form-label" >Password</label>
+            <input
 			    name = "password"
                 type = "password"
 				class = "form-control"
 				required
 		  />
 		  </div>
-		  <button class = "mb-2 btn btn-success">Login</button>
-       </div>
+		  <button class = "btn add-btn btn-lg w-100 text-white mb-2">Login</button>
 	  </form>
+	  <p class="text-center text-muted mb-0" style="font-size:.9rem;">New here? <a href="/signup">Create an account</a></p>
    </div>
  </div>

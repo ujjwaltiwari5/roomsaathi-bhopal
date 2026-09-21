@@ -1,85 +1,172 @@
 <% layout("/layouts/boilerplate")%>
 
-<div class = "row mt-3">
-   <div class = "col-8 offset-2">
-  <h3> Edit your listing: <%= listing.title %> </h3>
-     <form 
-	    method = "POST"
-		action = "/listings/<%= listing._id %>?_method=PUT"
-		novalidate class = "needs-validation"
-		enctype = "multipart/form-data">
+<div class = "row mt-3 mb-5">
+   <div class = "col-lg-8 offset-lg-2">
+    <div class="form-card">
+      <h3 class="form-card-title"><i class="fa-solid fa-pen-to-square"></i> Edit: <%= listing.title %></h3>
 
-   <div class = "mb-3">
-      <label for = "title" class = "form label">Title</label>
-        <input name = "listing[title]"
-	value = "<%= listing.title %>"
-	type = "text"
-	class = "form-control"
-	required
-	/>
-	<div class = valid-feedback > Title looks good! </div>
-   </div>
-     
-  <div class="mb-3">
-     <label for="description" class="form-label">Description</label>
-     <textarea 
-      name="listing[description]"
-     class="form-control"
-     required>
-     <%= listing.description %></textarea>
+     <form
+        method = "POST"
+        action = "/listings/<%= listing._id %>?_method=PUT"
+        novalidate class = "needs-validation"
+        enctype = "multipart/form-data">
 
-       <div class = "invalid-feedback" > Please enter a short description </div>
-   </div>    
+    <div class="form-section">
+      <h6 class="form-section-title"><i class="fa-solid fa-circle-info"></i> Basic Details</h6>
+      <div class = "mb-3">
+          <label for = "title" class = "form-label">Title</label>
+            <input name = "listing[title]"
+            value = "<%= listing.title %>"
+            type = "text"
+            class = "form-control"
+            required
+            />
+            <div class = "valid-feedback" > Title looks good! </div>
+       </div>
 
-   <div class = "row ">
-      <div class = "mb-3 col-md-4">
-      <label for = "price" class = "form-label">Price</label>
-         <input name = "listing[price]"
-	 value = "<%= listing.price %>"
-	 type = "Number"
-	 class = "form-control"
-	 required/>
-	 <div class = "invalid-feedback" > Price should be valid </div>
-      </div>   
+      <div class="mb-3">
+         <label for="description" class="form-label">Description</label>
+         <textarea
+          name="listing[description]"
+         class="form-control"
+         rows="4"
+         required>
+         <%= listing.description %></textarea>
+           <div class = "invalid-feedback" > Please enter a short description </div>
+       </div>
+    </div>
 
-     <div class = "mb-3 col-md-8">
-      <label for = "Country" class = "form-label"> Country </label>
-    <input name = "listing[country]"
-    value = "<%= listing.country %>"
-    type = "text"
-    class = "form-control"
-    required
-       />
-    <div class = "invalid-feedback" > Country should be valid </div>
-  </div>
-  </div>
-    
-   <div class = "mb-3">
-     Original Listing Image </br>
-	 <img src="<%= originalImageUrl %>" style="width:250px; height:200px; object-fit:cover;">
-	 </div>
+    <div class="form-section">
+      <h6 class="form-section-title"><i class="fa-solid fa-indian-rupee-sign"></i> Pricing</h6>
+       <div class = "row">
+          <div class = "mb-3 col-md-6">
+          <label for = "price" class = "form-label">Monthly Rent (₹)</label>
+             <input name = "listing[price]"
+             value = "<%= listing.price %>"
+             type = "number"
+             class = "form-control"
+             required/>
+             <div class = "invalid-feedback" > Rent should be valid </div>
+          </div>
 
-   <div class = "mb-3">
-       <label for = "Image" class = "form-label">Upload New Image</label>
-        <input name = "listing[image]"
-	 type = "file"
-	 class = "form-control"
-	  />
-   </div>
+          <div class = "mb-3 col-md-6">
+            <label for = "deposit" class = "form-label"> Security Deposit (₹) </label>
+            <input name = "listing[deposit]"
+            value = "<%= listing.deposit %>"
+            type = "number"
+            class = "form-control" />
+          </div>
+      </div>
+    </div>
 
-   <div class = "mb-3">
-     <label for = "Location" class = "form-label"> Location </label>
-       <input name = "listing[location]"
-       value = "<%= listing.location %>"
-       type = "text"
-       class = "form-control"
-       required
-       />
-       <div class = "invalid-feedback" > Location should be valid </div>
-   </div>
-      
-     <button class = "btn btn-dark edit-btn mb-3"> Edit </button>
-  
+    <div class="form-section">
+      <h6 class="form-section-title"><i class="fa-solid fa-door-open"></i> Room Details</h6>
+       <div class = "row">
+          <div class = "mb-3 col-md-4">
+            <label for = "roomType" class = "form-label"> Room Type </label>
+            <select name = "listing[roomType]" class = "form-select" required>
+              <% ["Single Room","1BHK","2BHK","3BHK","PG","Flat"].forEach(t => { %>
+                <option <%= listing.roomType === t ? "selected" : "" %>><%= t %></option>
+              <% }) %>
+            </select>
+          </div>
+
+         <div class = "mb-3 col-md-4">
+           <label for = "furnishing" class = "form-label"> Furnishing </label>
+           <select name = "listing[furnishing]" class = "form-select">
+             <% ["Unfurnished","Semi-Furnished","Furnished"].forEach(f => { %>
+               <option <%= listing.furnishing === f ? "selected" : "" %>><%= f %></option>
+             <% }) %>
+           </select>
+         </div>
+         <div class = "mb-3 col-md-4">
+           <label for = "preferredFor" class = "form-label"> Preferred Tenants </label>
+           <select name = "listing[preferredFor]" class = "form-select">
+             <% ["Any","Boys","Girls","Family"].forEach(p => { %>
+               <option <%= listing.preferredFor === p ? "selected" : "" %>><%= p %></option>
+             <% }) %>
+           </select>
+         </div>
+       </div>
+
+      <div class = "mb-1">
+        <label class = "form-label"> Amenities </label>
+        <div class="amenity-check-grid">
+          <% ["WiFi","AC","Geyser","Parking","Attached Washroom","Power Backup","Fridge","Water Purifier"].forEach(a => { %>
+            <div class="form-check">
+              <input class="form-check-input" type="checkbox" name="listing[amenities]" value="<%= a %>" id="am-<%= a %>"
+                <%= listing.amenities && listing.amenities.includes(a) ? "checked" : "" %>>
+              <label class="form-check-label" for="am-<%= a %>"><%= a %></label>
+            </div>
+          <% }) %>
+        </div>
+      </div>
+    </div>
+
+    <div class="form-section">
+      <h6 class="form-section-title"><i class="fa-solid fa-calendar-check"></i> Availability & Contact</h6>
+       <div class = "row">
+         <div class = "mb-3 col-md-6">
+           <label for = "availableFrom" class = "form-label"> Available From </label>
+           <input name = "listing[availableFrom]" type = "date" class = "form-control"
+             value="<%= listing.availableFrom ? listing.availableFrom.toISOString().split('T')[0] : '' %>" />
+         </div>
+         <div class = "mb-3 col-md-6">
+           <label for = "contactNumber" class = "form-label"> Contact Number (WhatsApp) </label>
+           <input name = "listing[contactNumber]" value="<%= listing.contactNumber %>" type = "tel" class = "form-control" required />
+         </div>
+       </div>
+    </div>
+
+    <div class="form-section">
+      <h6 class="form-section-title"><i class="fa-solid fa-images"></i> Photos</h6>
+       <div class = "mb-3">
+         <label class="form-label">Current Photos</label>
+         <div class="d-flex flex-wrap gap-2 mt-1">
+           <% listing.images.forEach(img => { %>
+             <img src="<%= img.url %>" style="width:130px; height:100px; object-fit:cover; border-radius:10px;">
+           <% }) %>
+         </div>
+       </div>
+
+       <div class = "mb-3">
+           <label for = "Image" class = "form-label">Add More Photos (optional)</label>
+            <input name = "listing[images]"
+            type = "file"
+            multiple
+            accept="image/*"
+            class = "form-control"
+            />
+       </div>
+    </div>
+
+    <div class="form-section">
+      <h6 class="form-section-title"><i class="fa-solid fa-location-dot"></i> Location</h6>
+       <div class = "mb-3">
+         <label for = "area" class = "form-label"> Area / Locality </label>
+           <input name = "listing[area]"
+           value = "<%= listing.area %>"
+           type = "text"
+           class = "form-control"
+           required
+           />
+       </div>
+
+       <div class = "mb-3">
+         <label for = "Location" class = "form-label"> Full Address (for map) </label>
+           <input name = "listing[location]"
+           value = "<%= listing.location %>"
+           type = "text"
+           class = "form-control"
+           required
+           />
+           <div class = "invalid-feedback" > Address should be valid </div>
+       </div>
+    </div>
+
+     <button class = "btn edit-btn btn-lg w-100 text-white mt-2"> <i class="fa-solid fa-check"></i> Save Changes </button>
+
   </form>
+  </div>
   </div>
   </div>

@@ -1,77 +1,171 @@
 <% layout("./layouts/boilerplate.ejs") %>
-<div class = "row mt-3">
-  <div class = "col-8 offset-2">
-    <h3>Create a new Listing </h3>
+<div class = "row mt-3 mb-5">
+  <div class = "col-lg-8 offset-lg-2">
+    <div class="form-card">
+      <h3 class="form-card-title"><i class="fa-solid fa-house-circle-plus"></i> List your Room / Flat</h3>
+      <p class="text-muted mb-4">Apni property ki details bharo — students aur professionals tak seedha pahuchega.</p>
+
   <form method = "POST"
     action = "/listings"
-	novalidate class = "needs-validation"
-	enctype = "multipart/form-data">
+    novalidate class = "needs-validation"
+    enctype = "multipart/form-data">
 
-  <div class = "mb-3">
-      <label for = "Title" class = "form-label" >Title </label>
-      <input name = "listing[title]"
-        placeholder = "Add a catchy Title"
-        type = "text"
-        class = "form-control"
-	required
-       />
-       <div class = "valid-feedback" > Title looks good! </div>
- </div>
-
-   <div class = "mb-3">
-      <label for = "description" class = "form-label">Description </label>
-        <textarea name = "listing[description]"
-        placeholder = "enter description"
-	type = "text"
-	class = "form-control"
-	required>
-	</textarea>
-	<div class = "invalid-feedback" > Please enter a short description. </div>
-   </div>
-    <div class = "row">
-       <div class = "mb-3 col-md-4">
-         <label for = "Price" class = "form-label">Price</label>
-          <input name = "listing[price]"
-          placeholder = "1000"
-          type = "String"
-          class = "form-control"
-	  required/>
-	  <div class = "invalid-feedback" > Price should be valid </div>
-      </div>
-
-      <div class = "mb-3 col-md-8">
-        <label for = "Country" class = "form-label"> Country </label>
-          <input name = "listing[country]"
-          placeholder = "India"
-              type = "text"
-             class = "form-control"
-	     required
-        />
-	<div class = "invalid-feedback" > Country should be valid </div>
+    <div class="form-section">
+      <h6 class="form-section-title"><i class="fa-solid fa-circle-info"></i> Basic Details</h6>
+      <div class = "mb-3">
+          <label for = "Title" class = "form-label" >Title </label>
+          <input name = "listing[title]"
+            placeholder = "e.g. Spacious 1BHK near SIRT College"
+            type = "text"
+            class = "form-control"
+        required
+           />
+           <div class = "valid-feedback" > Title looks good! </div>
      </div>
 
-   </div>
-   <div class = "mb-3">
-      <label for = "Image" class = "form-label"> Upload Image</label>
-     <input name = "listing[image]"
-     type = "file"
-     class = "form-control"
-     />
-   </div>
- 
-   <div class = "mb-3">
-      <label for = "Location" class = "form-label"> Location </label>
-     <input name = "listing[location]"
-     placeholder = "Delhi,Bangalore,Pune"
-     type = "text"
-     class = "form-control"
-     required />
-      <div class = "invalid-feedback" > Location should be valid </div>
-   </div>
+       <div class = "mb-3">
+          <label for = "description" class = "form-label">Description </label>
+            <textarea name = "listing[description]"
+            placeholder = "Describe the room/flat, nearby colleges, rules, etc."
+            class = "form-control"
+            rows="4"
+        required>
+            </textarea>
+            <div class = "invalid-feedback" > Please enter a short description. </div>
+       </div>
+    </div>
 
-   
-     <button class = "btn btn-dark add-btn mb-3"> ADD </button>
-  
+    <div class="form-section">
+      <h6 class="form-section-title"><i class="fa-solid fa-indian-rupee-sign"></i> Pricing</h6>
+        <div class = "row">
+           <div class = "mb-3 col-md-6">
+             <label for = "Price" class = "form-label">Monthly Rent (₹)</label>
+              <input name = "listing[price]"
+              placeholder = "5000"
+              type = "number"
+              class = "form-control"
+          required/>
+          <div class = "invalid-feedback" > Rent should be valid </div>
+          </div>
+
+          <div class = "mb-3 col-md-6">
+            <label for = "Deposit" class = "form-label"> Security Deposit (₹) </label>
+              <input name = "listing[deposit]"
+              placeholder = "10000"
+              type = "number"
+              class = "form-control"
+            />
+         </div>
+       </div>
+    </div>
+
+    <div class="form-section">
+      <h6 class="form-section-title"><i class="fa-solid fa-door-open"></i> Room Details</h6>
+      <div class = "row">
+          <div class = "mb-3 col-md-4">
+            <label for = "RoomType" class = "form-label"> Room Type </label>
+            <select name = "listing[roomType]" class = "form-select" required>
+              <option value = "" disabled selected>Select type</option>
+              <option>Single Room</option>
+              <option>1BHK</option>
+              <option>2BHK</option>
+              <option>3BHK</option>
+              <option>PG</option>
+              <option>Flat</option>
+            </select>
+         </div>
+
+          <div class = "mb-3 col-md-4">
+            <label for = "Furnishing" class = "form-label"> Furnishing </label>
+            <select name = "listing[furnishing]" class = "form-select">
+              <option value = "" disabled selected>Select furnishing</option>
+              <option>Unfurnished</option>
+              <option>Semi-Furnished</option>
+              <option>Furnished</option>
+            </select>
+          </div>
+
+          <div class = "mb-3 col-md-4">
+            <label for = "PreferredFor" class = "form-label"> Preferred Tenants </label>
+            <select name = "listing[preferredFor]" class = "form-select">
+              <option value = "Any" selected>Any</option>
+              <option>Boys</option>
+              <option>Girls</option>
+              <option>Family</option>
+            </select>
+          </div>
+      </div>
+
+      <div class = "mb-1">
+        <label class = "form-label"> Amenities </label>
+        <div class="amenity-check-grid">
+          <% ["WiFi","AC","Geyser","Parking","Attached Washroom","Power Backup","Fridge","Water Purifier"].forEach(a => { %>
+            <div class="form-check">
+              <input class="form-check-input" type="checkbox" name="listing[amenities]" value="<%= a %>" id="am-<%= a %>">
+              <label class="form-check-label" for="am-<%= a %>"><%= a %></label>
+            </div>
+          <% }) %>
+        </div>
+      </div>
+    </div>
+
+    <div class="form-section">
+      <h6 class="form-section-title"><i class="fa-solid fa-calendar-check"></i> Availability & Contact</h6>
+      <div class = "row">
+        <div class = "mb-3 col-md-6">
+          <label for = "AvailableFrom" class = "form-label"> Available From </label>
+          <input name = "listing[availableFrom]" type = "date" class = "form-control" />
+        </div>
+        <div class = "mb-3 col-md-6">
+          <label for = "ContactNumber" class = "form-label"> Contact Number (WhatsApp) </label>
+          <input name = "listing[contactNumber]" placeholder = "9876543210" type = "tel" class = "form-control" required />
+        </div>
+      </div>
+    </div>
+
+    <div class="form-section">
+      <h6 class="form-section-title"><i class="fa-solid fa-images"></i> Photos</h6>
+      <div class = "mb-3">
+         <label for = "Image" class = "form-label"> Upload Photos (up to 6) </label>
+        <input name = "listing[images]"
+        type = "file"
+        multiple
+        accept="image/*"
+        class = "form-control"
+        required
+        />
+      </div>
+    </div>
+
+    <div class="form-section">
+      <h6 class="form-section-title"><i class="fa-solid fa-location-dot"></i> Location</h6>
+      <div class = "mb-3">
+         <label for = "Area" class = "form-label"> Area / Locality </label>
+        <input name = "listing[area]"
+        placeholder = "e.g. Kolar Road"
+        list = "areaList"
+        type = "text"
+        class = "form-control"
+        required />
+        <datalist id="areaList">
+          <% areas.forEach(a => { %><option value="<%= a %>"><% }) %>
+        </datalist>
+      </div>
+
+      <div class = "mb-3">
+         <label for = "Location" class = "form-label"> Full Address (for map) </label>
+        <input name = "listing[location]"
+        placeholder = "House/Building name, street, Bhopal"
+        type = "text"
+        class = "form-control"
+        required />
+         <div class = "invalid-feedback" > Address should be valid </div>
+      </div>
+    </div>
+
+     <button class = "btn add-btn btn-lg w-100 text-white mt-2"> <i class="fa-solid fa-paper-plane"></i> List Room/Flat</button>
+
   </form>
+  </div>
   </div>
   </div>

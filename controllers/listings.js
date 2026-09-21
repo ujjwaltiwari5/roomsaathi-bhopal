@@ -1,74 +1,68 @@
 const Listing = require("../models/listing.js");
- module.exports.index = async(req,res,)=>{
-	let	allListings = await Listing.find();
-	res.render("listings/index",{allListings});
-};
+const ExpressError = require("../utils/ExpressError.js");
 
-module.exports.renderNewForm = async (req,res)=>{
-	res.render("listings/new");
-};
+const BHOPAL_AREAS = [
+  "MP Nagar", "Kolar Road", "Arera Colony", "Ayodhya Bypass", "Bagmugaliya",
+  "Hoshangabad Road", "Bittan Market", "Shahpura", "Govindpura", "Habibganj",
+  "New Market", "Misrod", "Bawadiya Kalan", "Raisen Road", "Karond", "TT Nagar", "Piplani", "BHEL"
+];
+module.exports.BHOPAL_AREAS = BHOPAL_AREAS;
 
-module.exports.showListing = async(req,res)=>{
-	 let{id} = req.params;
-	 const listing = await Listing.findById(id)
-		 .populate({
-		 path:"reviews",
-		 populate:{
-		  path:"author",
-		 }
-	    })
-		 .populate("owner");
-	 if (!listing)
-	 {
-       req.flash("error", "Listing you search for does not exist");
-	  return res.redirect("/listings");
-	 }
-	 //console.log(listing);
-	 res.render("listings/show.ejs",{listing});
+function normalizeAmenities(raw) {
+  if (!raw) return [];
+  return Array.isArray(raw) ? raw : [raw];
 }
+
+module.exports.index = async (req, res) => {
+  let allListings = await Listing.find();
+  res.render("listings/index", { allListings, areas: BHOPAL_AREAS });
+};
+
+module.exports.renderNewForm = async (req, res) => {
+  res.render("listings/new", { areas: BHOPAL_AREAS });
+};
+
+module.exports.showListing = async (req, res) => {
+  let { id } = req.params;
+  const listing = await Listing.findById(id)
+    .populate({ path: "reviews", populate: { path: "author" } })
+    .populate("owner");
+  if (!listing) {
+    req.flash("error", "Listing you search for does not exist");
+    return res.redirect("/listings");
+  }
+  res.render("listings/show.ejs", { listing });
+};
 
 module.exports.createListing = async (req, res, next) => {
   try {
-    //  image data 
-    let url = req.file.path;
-    let filename = req.file.filename;
+    if (!req.files || req.files.length === 0) {
+      req.flash("error", "Please upload at least one photo of the room/flat.");
+      return res.redirect("/listings/new");
+    }
 
-    //  location 
+    let images = req.files.map((f) => ({ url: f.path, filename: f.filename }));
     let location = req.body.listing.location;
+    let geoUrl = `https://nominatim.openstreetmap.org/search?format=json&q=${location}, Bhopal`;
 
-    //  geocoding API
-    let geoUrl = `https://nominatim.openstreetmap.org/search?format=json&q=${location}`;
-
-    let response = await fetch(geoUrl ,
-		{
-     headers: {
-       "User-Agent": "wanderlust-app"
-             }
-       });
-	   let data = await response.json();
+    let response = await fetch(geoUrl, { headers: { "User-Agent": "wanderlust-app" } });
+    let data = await response.json();
 
     if (data.length === 0) {
-      req.flash("error", "Location not found!");
+      req.flash("error", "Location not found! Try a more specific address.");
       return res.redirect("/listings/new");
     }
 
     let lat = parseFloat(data[0].lat);
     let lng = parseFloat(data[0].lon);
 
-    //  listing create
     const newListing = new Listing(req.body.listing);
-
-    
     newListing.owner = req.user._id;
-    newListing.image = { url, filename };
+    newListing.images = images;
+    newListing.amenities = normalizeAmenities(req.body.listing.amenities);
+    newListing.country = "India";
+    newListing.geometry = { type: "Point", coordinates: [lng, lat] };
 
-    // NEW: geometry add
-    newListing.geometry = {
-      type: "Point",
-      coordinates: [lng, lat],
-    };
-
-    //  save
     await newListing.save();
 
     req.flash("success", "New Listing Created!");
@@ -78,22 +72,18 @@ module.exports.createListing = async (req, res, next) => {
   }
 };
 
-  module.exports.renderEditForm = async (req,res)=>{
-	let{id} = req.params;
-	const listing = await Listing.findById(id);
-	if (!listing)
-	 {
-       req.flash("error", "Listing you search for does not exist");
-	  return res.redirect("/listings");
-	 }	
-	 let originalImageUrl = listing.image.url;
-	     originalImageUrl = originalImageUrl.replace("/upload", "/upload/h_200,w_250");
-	res.render("listings/edit.ejs",{listing,originalImageUrl});
-}
-
- module.exports.updateListing = async (req, res) => {
+module.exports.renderEditForm = async (req, res) => {
   let { id } = req.params;
+  const listing = await Listing.findById(id);
+  if (!listing) {
+    req.flash("error", "Listing you search for does not exist");
+    return res.redirect("/listings");
+  }
+  res.render("listings/edit.ejs", { listing, areas: BHOPAL_AREAS });
+};
 
+module.exports.updateListing = async (req, res) => {
+  let { id } = req.params;
   if (!req.body.listing) {
     throw new ExpressError(400, "send valid data for listing");
   }
@@ -101,29 +91,22 @@ module.exports.createListing = async (req, res, next) => {
   let listing = await Listing.findById(id);
 
   if (req.body.listing.location !== listing.location) {
-    let geoUrl = `https://nominatim.openstreetmap.org/search?format=json&q=${req.body.listing.location}`;
-
-    let response = await fetch(geoUrl, {
-      headers: { "User-Agent": "wanderlust-app" },
-    });
-
+    let geoUrl = `https://nominatim.openstreetmap.org/search?format=json&q=${req.body.listing.location}, Bhopal`;
+    let response = await fetch(geoUrl, { headers: { "User-Agent": "wanderlust-app" } });
     let data = await response.json();
-
     if (data.length > 0) {
       let lat = parseFloat(data[0].lat);
       let lng = parseFloat(data[0].lon);
-
-      listing.geometry = {
-        type: "Point",
-        coordinates: [lng, lat],
-      };
+      listing.geometry = { type: "Point", coordinates: [lng, lat] };
     }
   }
+
   Object.assign(listing, req.body.listing);
-  if (typeof req.file !== "undefined") {
-    let url = req.file.path;
-    let filename = req.file.filename;
-    listing.image = { url, filename };
+  listing.amenities = normalizeAmenities(req.body.listing.amenities);
+
+  if (req.files && req.files.length > 0) {
+    let newImages = req.files.map((f) => ({ url: f.path, filename: f.filename }));
+    listing.images = [...listing.images, ...newImages];
   }
 
   await listing.save();
@@ -132,9 +115,9 @@ module.exports.createListing = async (req, res, next) => {
   res.redirect(`/listings/${id}`);
 };
 
-module.exports.destroyListing = async (req,res)=>{
-	let{id} = req.params;
-	let deletedChat = await Listing.findByIdAndDelete(id);
-	req.flash("success", "Listing Deleted!");
-	res.redirect("/listings");
-}
+module.exports.destroyListing = async (req, res) => {
+  let { id } = req.params;
+  await Listing.findByIdAndDelete(id);
+  req.flash("success", "Listing Deleted!");
+  res.redirect("/listings");
+};

@@ -1,34 +1,72 @@
 <style>
+ .filter-form{
+   flex: 1 1 auto;
+   min-width: 0;
+ }
+
+ .filter-form select,
+ .filter-form input[type="search"]{
+   font-size:0.9rem;
+   padding:0.4rem 0.9rem;
+   border-radius:18px;
+   height:40px;
+   border:1px solid #dcdcdc;
+ }
+
+ .filter-form input[type="search"]{
+   flex: 1 1 auto;
+   min-width: 90px;
+ }
+
+ .filter-form select{
+   flex: 1 1 auto;
+   min-width: 80px;
+ }
+
  .search-btn{
-    background-color: #fe424d;
+    background-color: var(--brand);
 	color: #fff;
-	border-radius: 25px;
-	padding: 0 1rem 0 1rem;
+	border-radius: 18px;
+	padding: 0.4rem 0.9rem;
+	border: none;
+	height:40px;
+	font-size:0.9rem;
+	flex-shrink:0;
 	}
 
  .search-btn:hover{
-    background-color: #fe424d;
+    background-color: var(--brand-dark);
 	color: #fff;
 	}
 
- .search-btn i {
-    display: inline;
-	margin-right:0.5rem;
-	}
+ .list-room-link{
+   background-color: var(--brand);
+   color: #fff !important;
+   border-radius: 18px;
+   padding: 0.45rem 0.9rem !important;
+   font-weight: 500;
+   font-size:0.9rem;
+   white-space: nowrap;
+ }
 
- .search-inp{
-     font-size:1rem;
-	 border-radius:25px;
-	 padding: 0 0 0.3rem 3rem;
-     }
+ .list-room-link:hover{
+   background-color: var(--brand-dark);
+ }
+
+ .navbar-nav .nav-link{
+   white-space: nowrap;
+   padding-left: .6rem !important;
+   padding-right: .6rem !important;
+   font-size: 0.92rem;
+ }
 	</style>
 
 
-<nav class="navbar navbar-expand-md bg-body-white border-bottom sticky-top">
+<nav class="navbar navbar-expand-lg bg-body-white border-bottom sticky-top">
   <div class="container-fluid">
     <a class="navbar-brand d-flex align-items-center" href="/listings">
-  <i class="fa-solid fa-compass fs-3" style="color:#fe424d;"></i>
-  <span class="ms-2 fw-bold fs-4" style="color:#fe424d;">Wanderlust</span>
+  <i class="fa-solid fa-house-chimney fs-5" style="color:var(--brand);"></i>
+  <span class="ms-2 fw-bold fs-6" style="color:var(--brand);">RoomSaathi <span style="color:#222;">Bhopal</span></span>
 </a>
     <button class="navbar-toggler" 
             type="button" data-bs-toggle="collapse" 
@@ -40,24 +78,44 @@
       </span>
     </button>
     <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
-      <div class="navbar-nav">
-	    <a class="nav-link" href="/listings">Explore</a>
+      <div class="navbar-nav me-lg-2">
+	    <a class="nav-link" href="/listings">Browse Rooms</a>
       </div>
-	   <div class = "navbar-nav ms-auto">
-          <form action = "/search" method = "GET" class="d-flex" role="search">
+
+	   <form action="/search" method="GET" class="filter-form d-flex flex-nowrap gap-2 align-items-center mx-lg-3 my-2 my-lg-0">
         <input 
-		class="form-control me-2 search-inp"
+		class="form-control"
 		type="search"
 		name="destination"
-		placeholder="Search destination" />
-       <button 
-	     class="btn search-btn"
-		 type="submit">
-		 <i class = "fa-solid fa-magnifying-glass"></i>Search</button>
-    </form>
-  </div>
-	  <div class="navbar-nav ms-auto">
-	    <a class="nav-link" href="/listings/new">Airbnb your home</a>
+		placeholder="Search by area, title..." />
+        <select name="area" class="form-select">
+          <option value="">Any Area</option>
+          <% areas.forEach(a => { %>
+            <option value="<%= a %>"><%= a %></option>
+          <% }) %>
+        </select>
+        <select name="roomType" class="form-select">
+          <option value="">Room Type</option>
+          <option value="Single Room">Single Room</option>
+          <option value="1BHK">1BHK</option>
+          <option value="2BHK">2BHK</option>
+          <option value="3BHK">3BHK</option>
+          <option value="PG">PG</option>
+          <option value="Flat">Flat</option>
+        </select>
+        <select name="preferredFor" class="form-select">
+          <option value="">Preferred</option>
+          <option value="Boys">Boys</option>
+          <option value="Girls">Girls</option>
+          <option value="Family">Family</option>
+          <option value="Any">Any</option>
+        </select>
+	    <button class="btn search-btn" type="submit">
+		 <i class="fa-solid fa-magnifying-glass"></i></button>
+       </form>
+
+	  <div class="navbar-nav ms-auto ms-lg-2 align-items-lg-center flex-nowrap">
+	    <a class="nav-link list-room-link me-lg-2" href="/listings/new">List Room</a>
 	  <% if (!currUser) { %>
 	    <a class="nav-link"  href="/signup"><b>Sign up</b></a>
         <a class="nav-link" href="/login"><b>Login</b></a>

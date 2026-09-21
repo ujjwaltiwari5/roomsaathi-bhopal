@@ -3,17 +3,87 @@
    <div class="col-8 offset-2">
      <h3><%= listing.title %></h3>
       <div class="card show-card listing-card">
-      <img
-        src="<%= listing.image.url %>"
-        class="card-img-top show-img"
-        alt="listing-image"/>
-      <div class="card-body">
-        <p class="card-text"> Owned by <i><%= listing.owner.username %> </i></p>
-        <p class="card-text">  <%= listing.description %> </p>
-        <p class="card-text"> &#8377 <%= listing.price?listing.price.toLocaleString("en-IN"):" " %></p>
-        <p class="card-text"> <%= listing.location %> </p> 
-		<p class="card-text"> <%= listing.country %> </p>
-        
+
+      <div id="listingCarousel" class="carousel slide mb-0" data-bs-ride="carousel">
+        <% if (listing.images && listing.images.length > 1) { %>
+        <div class="carousel-indicators">
+          <% listing.images.forEach((img, i) => { %>
+            <button type="button" data-bs-target="#listingCarousel" data-bs-slide-to="<%= i %>"
+              class="<%= i === 0 ? 'active' : '' %>"
+              aria-current="<%= i === 0 ? 'true' : 'false' %>"
+              aria-label="Slide <%= i + 1 %>"></button>
+          <% }) %>
+        </div>
+        <% } %>
+
+        <div class="carousel-inner">
+          <% listing.images.forEach((img, i) => { %>
+            <div class="carousel-item <%= i === 0 ? 'active' : '' %>">
+              <img src="<%= img.url %>" class="d-block w-100 show-img" alt="listing-image"/>
+            </div>
+          <% }) %>
+        </div>
+
+        <% if (listing.images && listing.images.length > 1) { %>
+        <button class="carousel-control-prev" type="button" data-bs-target="#listingCarousel" data-bs-slide="prev">
+          <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+          <span class="visually-hidden">Previous</span>
+        </button>
+        <button class="carousel-control-next" type="button" data-bs-target="#listingCarousel" data-bs-slide="next">
+          <span class="carousel-control-next-icon" aria-hidden="true"></span>
+          <span class="visually-hidden">Next</span>
+        </button>
+        <% } %>
+      </div>
+
+      <div class="card-body p-4">
+
+        <div class="d-flex flex-wrap gap-2 mb-3">
+          <span class="badge-pill badge-room"><%= listing.roomType %></span>
+          <% if (listing.furnishing) { %><span class="badge-pill badge-furnish"><%= listing.furnishing %></span><% } %>
+          <span class="badge-pill badge-pref-<%= listing.preferredFor || 'Any' %>"><i class="fa-solid fa-user-group"></i> <%= listing.preferredFor || "Any" %></span>
+        </div>
+
+        <div class="owner-chip">
+          <span class="owner-avatar"><%= listing.owner.username.charAt(0).toUpperCase() %></span>
+          Listed by <b>&nbsp;<%= listing.owner.username %></b>
+        </div>
+
+        <p class="listing-desc"> <%= listing.description %> </p>
+
+        <div class="price-box">
+          <span class="price-amount">&#8377;<%= listing.price ? listing.price.toLocaleString("en-IN") : " " %></span>
+          <span class="price-period">/ month</span>
+          <% if (listing.deposit) { %>
+            <div class="text-muted mt-1" style="font-size:.9rem;">Security Deposit: &#8377;<%= listing.deposit.toLocaleString("en-IN") %></div>
+          <% } %>
+        </div>
+
+        <% if (listing.amenities && listing.amenities.length) { %>
+        <div class="mb-3">
+          <div class="meta-row"><i class="fa-solid fa-list-check"></i> <b>Amenities</b></div>
+          <div>
+            <% listing.amenities.forEach(a => { %>
+              <span class="amenity-pill"><i class="fa-solid fa-check"></i> <%= a %></span>
+            <% }) %>
+          </div>
+        </div>
+        <% } %>
+
+        <% if (listing.availableFrom) { %>
+        <div class="meta-row"><i class="fa-solid fa-calendar-check"></i> Available from <%= listing.availableFrom.toDateString() %></div>
+        <% } %>
+
+        <div class="meta-row"><i class="fa-solid fa-location-dot"></i> <%= listing.area %>, Bhopal</div>
+        <div class="meta-row"><i class="fa-solid fa-map-pin"></i> <%= listing.location %></div>
+
+        <% if (listing.contactNumber) { %>
+        <a href="https://wa.me/91<%= listing.contactNumber %>?text=<%= encodeURIComponent('Hi, I am interested in your listing "' + listing.title + '" on RoomSaathi Bhopal.') %>"
+           target="_blank"
+           class="btn whatsapp-btn mb-3 mt-2">
+           <i class="fa-brands fa-whatsapp"></i> Contact on WhatsApp
+        </a>
+        <% } %>
 
         <!-- Buttons card ke andar -->
         <% if (currUser && listing.owner._id.equals(currUser._id)) { %>
@@ -119,7 +189,7 @@
           <%}%>
 		  </div>
 			<div >
-			  <h3> Where you 'll be </h3>
+			  <h3> Room/Flat location </h3>
 			  <div id="map"></div>
              <script>
                window.listingCoords = <%- JSON.stringify(listing.geometry?.coordinates || []) %>;

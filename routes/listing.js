@@ -12,16 +12,15 @@ router
   .route("/")
   .get(wrapAsync(listingController.index))
   .post(
-	isLoggedIn,
-	validateListing,
-	upload.single("listing[image]"),
-	wrapAsync(listingController.createListing)
-	);
+    isLoggedIn,
+    upload.array("listing[images]", 6),
+    validateListing,
+    wrapAsync(listingController.createListing)
+  );
 
-// New Route
 router.get("/new",
-	isLoggedIn,
-	wrapAsync(listingController.renderNewForm)
+  isLoggedIn,
+  wrapAsync(listingController.renderNewForm)
 );
 
 router
@@ -29,20 +28,17 @@ router
   .get(wrapAsync(listingController.showListing))
   .put(isLoggedIn,
         isOwner,
-        upload.single("listing[image]"),
-		validateListing,
-		wrapAsync(listingController.updateListing))
+        upload.array("listing[images]", 6),
+        validateListing,
+        wrapAsync(listingController.updateListing))
   .delete(
-	isLoggedIn,
-	isOwner,
-	wrapAsync(listingController.destroyListing));
-
-//Edit Route
+    isLoggedIn,
+    isOwner,
+    wrapAsync(listingController.destroyListing));
 
 router.get("/:id/edit",
     isLoggedIn,
-	isOwner,
-	wrapAsync(listingController.renderEditForm)
+    isOwner,
+    wrapAsync(listingController.renderEditForm)
 );
 module.exports = router;
-

@@ -18,6 +18,7 @@ const passport = require("passport");
 const LocalStrategy = require("passport-local");
 const User = require("./models/user.js");
 const Listing = require("./models/listing.js");
+const { BHOPAL_AREAS } = require("./controllers/listings.js");
 //const initData = require("./init/data.js");
 const listingRouter = require("./routes/listing.js");
 const reviewRouter = require("./routes/review.js");
@@ -72,6 +73,7 @@ app.use((req,res,next) => {
 	res.locals.success = req.flash("success");
 	res.locals.error = req.flash("error");
 	res.locals.currUser = req.user;
+	res.locals.areas = BHOPAL_AREAS;
 	next();
 });
 
@@ -88,22 +90,29 @@ app.get("/demoUser", async(req,res) =>{
   app.use("/listings/:id/reviews", reviewRouter);
   app.use("/", userRouter);
   app.get("/search", async (req, res) => {
-	let { destination } = req.query;
-	let allListings;
+	let { destination, area, roomType, preferredFor } = req.query;
+	let filter = {};
 
 	if (destination && destination.trim() !== "") {
-		allListings = await Listing.find({
-			$or: [
-				{ title: { $regex: destination, $options: "i" } },
-				{ location: { $regex: destination, $options: "i" } },
-				{ country: { $regex: destination, $options: "i" } },
-			],
-		});
-	} else {
-		allListings = await Listing.find({});
+		filter.$or = [
+			{ title: { $regex: destination, $options: "i" } },
+			{ location: { $regex: destination, $options: "i" } },
+			{ area: { $regex: destination, $options: "i" } },
+		];
+	}
+	if (area && area.trim() !== "") {
+		filter.area = { $regex: `^${area}$`, $options: "i" };
+	}
+	if (roomType && roomType.trim() !== "") {
+		filter.roomType = roomType;
+	}
+	if (preferredFor && preferredFor.trim() !== "") {
+		filter.preferredFor = preferredFor;
 	}
 
-	res.render("listings/index", { allListings });
+	const BHOPAL_AREAS = require("./controllers/listings.js").BHOPAL_AREAS;
+	let allListings = await Listing.find(filter);
+	res.render("listings/index", { allListings, areas: BHOPAL_AREAS });
 });
 
 app.use((req,res,next) => {
